@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Splitwise Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    h1 { color: #2c3e50; }
+    .card { background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .owed { color: #27ae60; font-weight: bold; }
+    .owes { color: #e74c3c; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+    .anomaly { background: #fff3cd; padding: 8px; margin-bottom: 6px; border-radius: 4px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Roommate Expense Dashboard</h1>
+
+  <h2>Net Balances</h2>
+  <div id="balances"></div>
+
+  <h2>Import Report (Anomalies)</h2>
+  <div id="report"></div>
+
+  <h2>All Expenses</h2>
+  <table id="expenses">
+    <thead>
+      <tr><th>Date</th><th>Description</th><th>Paid By</th><th>Amount</th><th>Currency</th><th>Split Type</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Settlements</h2>
+  <table id="settlements">
+    <thead>
+      <tr><th>Date</th><th>From</th><th>To</th><th>Amount</th><th>Currency</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    fetch('/api/balances').then(r => r.json()).then(data => {
+      const div = document.getElementById('balances');
+      data.forEach(u => {
+        let text, cls;
+        if (u.balance > 0) { text = `is owed ₹${u.balance}`; cls = 'owed'; }
+        else if (u.balance < 0) { text = `owes ₹${Math.abs(u.balance)}`; cls = 'owes'; }
+        else { text = 'is settled up'; cls = ''; }
+        div.innerHTML += `<div class="card">${u.name} <span class="${cls}">${text}</span></div>`;
+      });
+    });
+
+    fetch('/api/import-report').then(r => r.json()).then(data => {
+      const div = document.getElementById('report');
+      if (data.length === 0) { div.innerHTML = '<p>No anomalies found.</p>'; return; }
+      data.forEach(a => {
+        div.innerHTML += `<div class="anomaly"><strong>Row ${a.row}:</strong> ${a.issue} → <em>${a.action}</em></div>`;
+      });
+    });
+
+    fetch('/api/expenses').then(r => r.json()).then(data => {
+      const tbody = document.querySelector('#expenses tbody');
+      data.forEach(e => {
+        tbody.innerHTML += `<tr><td>${e.date}</td><td>${e.description}</td><td>${e.paid_by_name}</td><td>${e.amount}</td><td>${e.currency}</td><td>${e.split_type || '-'}</td></tr>`;
+      });
+    });
+
+    fetch('/api/settlements').then(r => r.json()).then(data => {
+      const tbody = document.querySelector('#settlements tbody');
+      if (data.length === 0) { tbody.innerHTML = '<tr><td colspan="5">None</td></tr>'; return; }
+      data.forEach(s => {
+        tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.from_name}</td><td>${s.to_name}</td><td>${s.amount}</td><td>${s.currency}</td></tr>`;
+      });
+    });
+  </script>
+</body>
+</html>
