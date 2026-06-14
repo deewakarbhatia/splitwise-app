@@ -1,0 +1,57 @@
+[
+  {
+    "row": 6,
+    "issue": "Possible duplicate of an earlier row (same date/amount/payer): \"dinner - marina bites\"",
+    "action": "Row skipped"
+  },
+  {
+    "row": 7,
+    "issue": "Amount \"1,200\" had comma separator",
+    "action": "Cleaned to 1200"
+  },
+  {
+    "row": 10,
+    "issue": "Amount \"899.995\" had >2 decimal places",
+    "action": "Rounded to 900"
+  },
+  {
+    "row": 13,
+    "issue": "Missing paid_by for \"House cleaning supplies\"",
+    "action": "Row skipped (cannot determine payer)"
+  },
+  {
+    "row": 14,
+    "issue": "\"Rohan paid Aisha back\" looks like a settlement (no split_type, single recipient)",
+    "action": "Recorded as settlement, not expense"
+  },
+  {
+    "row": 15,
+    "issue": "Percentage split totals 110%, not 100%",
+    "action": "Normalized proportionally to sum to 100%"
+  },
+  {
+    "row": 20,
+    "issue": "Expense \"Goa villa booking\" is in USD, not INR",
+    "action": "Stored as-is with currency tag; not converted (see DECISIONS.md)"
+  },
+  {
+    "row": 21,
+    "issue": "Expense \"Beach shack lunch\" is in USD, not INR",
+    "action": "Stored as-is with currency tag; not converted (see DECISIONS.md)"
+  },
+  {
+    "row": 23,
+    "issue": "Expense \"Parasailing\" is in USD, not INR",
+    "action": "Stored as-is with currency tag; not converted (see DECISIONS.md)"
+  },
+  {
+    "row": 26,
+    "issue": "Expense \"Parasailing refund\" is in USD, not INR",
+    "action": "Stored as-is with currency tag; not converted (see DECISIONS.md)"
+  },
+  {
+    "row": 32,
+    "issue": "Percentage split totals 110%, not 100%",
+    "action": "Normalized proportionally to sum to 100%"
+  }
+]
